@@ -1,8 +1,9 @@
 import os.path
 import subprocess
 import time
+from pcc.directoryutils import DirectoryUtils
 from pcc.logger import Logger
-from pcc.receiversever import ReceiverAPI
+from pcc.receiverserver import ReceiverAPI
 
 # If bluetooth has been discoverable for over __BT_DISCOVERABLE_TIMEOUT_S seconds, make it undiscoverable
 # to prevent neighbors from accidentally connecting.
@@ -17,10 +18,10 @@ from pcc.receiversever import ReceiverAPI
 class Sweeper():
 
     # How long to leave bluetooth as discoverable.
-    __BT_DISCOVERABLE_TIMEOUT_S = 30
+    BT_DISCOVERABLE_TIMEOUT_S = 30
 
     def __init__(self):
-        self.__logger = Logger().set_namespace(self.__class__.__name__)    
+        self.__logger = Logger().set_namespace(self.__class__.__name__)
 
     def run(self):
         while True:
@@ -28,16 +29,10 @@ class Sweeper():
                 time.sleep(5)
                 continue
 
-            # dbus-send --system --print-reply --type=method_call --dest=org.bluez /org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 string:Discoverable variant:boolean:false
-            is_bt_file_older_than_cmd = f'(( $(($(date +%s) - $(date -r {ReceiverAPI.BT_DISCOVERABLE_SUCCESS_FILE} +%s))) > {self.__BT_DISCOVERABLE_TIMEOUT_S} ))'
-            set_bt_discoverable_off_cmd = ('dbus-send --system --print-reply --type=method_call --dest=org.bluez ' +
-                '/org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 ' +
-                'string:Discoverable variant:boolean:false')
-            delete_bt_file_cmd = f'sudo rm -rf {ReceiverAPI.BT_DISCOVERABLE_SUCCESS_FILE}'
+            cmd = DirectoryUtils().root_dir + '/utils/sweeper_bt_cleanup.py'
             try:
                 subprocess.check_output(
-                    (f"flock --exclusive --nonblock {ReceiverAPI.BT_DISCOVERABLE_LOCK_FILE} --command " +
-                        f"'{is_bt_file_older_than_cmd} && {set_bt_discoverable_off_cmd} && {delete_bt_file_cmd}'"),
+                    (f"flock --exclusive --nonblock {ReceiverAPI.BT_DISCOVERABLE_LOCK_FILE} --command '{cmd}'"),
                     shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
                 ).decode("utf-8")
             except Exception as e:
