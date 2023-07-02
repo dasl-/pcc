@@ -24,7 +24,12 @@ class ReceiverAPI():
 
     def set_vol_pct(self, post_data):
         vol_pct = int(post_data['vol_pct'])
+        set_airplay_client_vol = bool(post_data['set_airplay_client_vol'])
         self.__vol_controller.set_vol_pct(vol_pct)
+        if set_airplay_client_vol:
+            self.__logger.info(f"setting airplay client volume: {vol_pct}.")
+            self.__vol_controller.set_airplay_vol_pct(vol_pct)
+
         return {
             'vol_pct': vol_pct,
             'success': True

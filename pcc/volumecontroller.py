@@ -56,8 +56,6 @@ class VolumeController:
             ('amixer', '-c', str(Config.get('sound.card', 0)), 'cset', f'numid={Config.get("sound.numid", 1)}', '--', str(vol_val))
         )
 
-        self.set_airplay_vol_pct(vol_pct)
-
     # Send new volume value from airplay server to airplay client.
     # See: https://github.com/mikebrady/shairport-sync/blob/12ad72c47fe7bb04e7250892c324ac5f5faa4071/documents/sample%20dbus%20commands#L86C1-L87
     def set_airplay_vol_pct(self, vol_pct):

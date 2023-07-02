@@ -54,6 +54,11 @@ class Receiver extends React.Component {
     });
   };
   markVolMutexReleasable = () => {
+    // Set airplay client volume after slider movement has finished, because sending the airplay dbus command
+    // has variable latency. If we set it with every change event, we would often see some volume
+    // changes happen out of order due to race conditions, resulting in bad UI.
+    this.props.setVolPct(this.props.receiver, this.state.vol_pct, true)
+
     this.setState({
       is_vol_lock_releasable: true,
       vol_lock_marked_releasable_time: (new Date()).getTime()
