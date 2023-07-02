@@ -14,6 +14,8 @@ main(){
     if [[ "$installation_type" != "receiver" ]]; then
         installNode
     fi
+
+    info "Finished installing dependencies."
 }
 
 usage() {

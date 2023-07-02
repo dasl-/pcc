@@ -22,6 +22,8 @@ main(){
     if [[ "$installation_type" != 'controller' ]]; then
         pass
     fi
+
+    info "Finished installation!"
 }
 
 usage() {
