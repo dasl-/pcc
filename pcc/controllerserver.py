@@ -32,7 +32,9 @@ class PccControllerServerRequestHandler(BaseHTTPRequestHandler):
     def __serve_static_asset(self):
         self.path = urlparse(self.path).path # get rid of query parameters e.g. `?foo=bar&baz=1`
         if self.path == '/':
-            self.path = '/index.html'
+            self.path = self.__root_dir + '/index.html'
+        else:
+            self.path = self.__root_dir + self.path
 
         try:
             file_to_open = open(self.path, 'rb').read()
