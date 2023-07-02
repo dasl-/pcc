@@ -3,6 +3,7 @@
 set -euo pipefail -o errtrace
 
 BASE_DIR="$(dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )")"
+installation_type=false
 
 main(){
     trap 'fail $? $LINENO' ERR
