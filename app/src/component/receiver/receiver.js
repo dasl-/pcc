@@ -21,7 +21,7 @@ class Receiver extends React.Component {
   }
 
   render() {
-    var bluetooth_class = (this.state.bt_discoverable ? 'bt-discoverable' : 'text-subtle') + ' bi bi-bluetooth svg-button';
+    var bluetooth_class = (this.state.bt_discoverable ? 'bt-discoverable' : 'bt-not-discoverable') + ' bi bi-bluetooth svg-button';
     return (
       <div className='receiver'>
         <h6>
@@ -52,7 +52,7 @@ class Receiver extends React.Component {
     if (this.state.bt_discoverable) {
       return;
     }
-    this.props.makeBtDiscoverable()
+    this.props.makeBtDiscoverable(this.props.receiver)
   };
 
   onVolChange = (vol_pct) => {
@@ -95,6 +95,7 @@ class Receiver extends React.Component {
     if (!this.state.is_vol_locked) {
       this.setState({vol_pct: nextProps.vol_pct});
     }
+    this.setState({bt_discoverable: nextProps.bt_discoverable});
   }
 
 }

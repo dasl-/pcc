@@ -26,6 +26,7 @@ class App extends React.Component {
 
     this.apiClient = new APIClient(config.receivers);
     this.setVolPct = this.setVolPct.bind(this);
+    this.makeBtDiscoverable = this.makeBtDiscoverable.bind(this);
     this.receiver_poll_timeout = {};
   }
 

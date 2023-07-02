@@ -76,6 +76,9 @@ setupLogging(){
     if [[ "$installation_type" == 'receiver' || "$installation_type" == 'all' ]]; then
         sudo touch /var/log/pcc/receiver.log
         sudo cp "$BASE_DIR"/install/pcc_receiver_syslog.conf /etc/rsyslog.d
+
+        sudo touch /var/log/pcc/sweeper.log
+        sudo cp "$BASE_DIR"/install/pcc_sweeper_syslog.conf /etc/rsyslog.d
     fi
     sudo systemctl restart rsyslog
 
@@ -93,6 +96,7 @@ setupSystemdServices(){
     fi
     if [[ "$installation_type" == 'receiver' || "$installation_type" == 'all' ]]; then
         sudo "$BASE_DIR/install/pcc_receiver_service.sh"
+        sudo "$BASE_DIR/install/pcc_sweeper_service.sh"
     fi
     sudo chown root:root /etc/systemd/system/pcc_*.service
     sudo chmod 644 /etc/systemd/system/pcc_*.service
@@ -115,8 +119,10 @@ setupSystemdServices(){
     fi
     if [[ "$installation_type" == 'receiver' || "$installation_type" == 'all' ]]; then
         sudo systemctl enable pcc_receiver.service
+        sudo systemctl enable pcc_sweeper.service
         sudo systemctl daemon-reload
         sudo systemctl restart pcc_receiver.service
+        sudo systemctl restart pcc_sweeper.service
     fi
 }
 

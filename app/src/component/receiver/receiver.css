@@ -43,6 +43,6 @@ input.volume {
     opacity: 0;
   }
 }
-.svg-button:hover {
+.bt-not-discoverable.svg-button:hover {
     cursor:pointer;
 }

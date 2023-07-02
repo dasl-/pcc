@@ -13,11 +13,11 @@ class ReceiverAPI():
 
     __hostname = socket.gethostname()
 
-    # Ensure only one process makes bluetooth discoverable at a time
-    __BT_DISCOVERABLE_LOCK_FILE = '/tmp/pcc_bt_discoverable_lock_file'
+    # Ensure only one process makes bluetooth (un)discoverable at a time
+    BT_DISCOVERABLE_LOCK_FILE = '/tmp/pcc_bt_discoverable_lock_file'
 
-    # The mtime of this file represents when we last made bluetooth discoverable
-    __BT_DISCOVERABLE_SUCCESS_FILE = '/tmp/pcc_bt_discoverable_success_file'
+    # The mtime of this file (if it exists) represents when we last made bluetooth discoverable
+    BT_DISCOVERABLE_SUCCESS_FILE = '/tmp/pcc_bt_discoverable_success_file'
 
     def __init__(self):
         self.__vol_controller = VolumeController()
@@ -27,7 +27,7 @@ class ReceiverAPI():
         return {
             'vol_pct': self.__vol_controller.get_vol_pct(),
             'hostname': self.__hostname,
-            'bt_discoverable': os.path.isfile(self.__BT_DISCOVERABLE_SUCCESS_FILE),
+            'bt_discoverable': os.path.isfile(self.BT_DISCOVERABLE_SUCCESS_FILE),
             'success': True,
         }
 
@@ -49,13 +49,11 @@ class ReceiverAPI():
         success = True
         try:
             subprocess.check_output(
-                (f"flock --exclusive --nonblock {self.__BT_DISCOVERABLE_LOCK_FILE} --command 'dbus-send " +
+                (f"flock --exclusive --nonblock {self.BT_DISCOVERABLE_LOCK_FILE} --command 'dbus-send " +
                     "--system --print-reply --type=method_call --dest=org.bluez " +
                     "/org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 " +
-                    f"string:Discoverable variant:boolean:true && touch {self.__BT_DISCOVERABLE_SUCCESS_FILE}'"),
-                shell = True,
-                executable = '/bin/bash',
-                stderr=subprocess.STDOUT
+                    f"string:Discoverable variant:boolean:true && touch {self.BT_DISCOVERABLE_SUCCESS_FILE}'"),
+                shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
             ).decode("utf-8")
         except Exception:
             success = False
