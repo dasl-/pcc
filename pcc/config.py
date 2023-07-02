@@ -88,7 +88,9 @@ class Config:
         else:
             raise Exception(f"No config file found at: {Config.__DEFAULT_CONFIG_PATH}.")
 
+        do_config_overrides_exist = False
         if os.path.exists(Config.__CONFIG_PATH):
+            do_config_overrides_exist = True
             Config.__logger.info(f"Found config file at: {Config.__CONFIG_PATH}.")
         else:
             Config.__logger.info(f"No config file found at: {Config.__CONFIG_PATH}.")
@@ -96,25 +98,26 @@ class Config:
         with open(Config.__DEFAULT_CONFIG_PATH) as default_config_json:
             Config.__config = pyjson5.decode(default_config_json.read())
 
-        with open(Config.__CONFIG_PATH) as config_json:
-            overrides = pyjson5.decode(config_json.read())
+        if do_config_overrides_exist:
+            with open(Config.__CONFIG_PATH) as config_json:
+                overrides = pyjson5.decode(config_json.read())
 
-            key_stack = []
-            for key in overrides.keys():
-                key_stack.append([key])
+                key_stack = []
+                for key in overrides.keys():
+                    key_stack.append([key])
 
-            for key in key_stack:
-                value = Config.__get(key, True, None, overrides)
-                if isinstance(value, dict) and value:
-                    for nested_key in value.keys():
-                        new_key = key.copy()
-                        new_key.append(nested_key)
-                        key_stack.append(new_key)
-                else:
-                    Config.__set_nested(key, value, Config.__config)
+                for key in key_stack:
+                    value = Config.__get(key, True, None, overrides)
+                    if isinstance(value, dict) and value:
+                        for nested_key in value.keys():
+                            new_key = key.copy()
+                            new_key.append(nested_key)
+                            key_stack.append(new_key)
+                    else:
+                        Config.__set_nested(key, value, Config.__config)
 
-            if 'log_level' in Config.__config and should_set_log_level:
-                Logger.set_level(Config.__config['log_level'])
+        if 'log_level' in Config.__config and should_set_log_level:
+            Logger.set_level(Config.__config['log_level'])
 
         Config.__is_loaded = True
 
