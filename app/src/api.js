@@ -23,6 +23,10 @@ class APIClient {
     });
   }
 
+  makeBtDiscoverable(receiver) {
+    return this.perform(receiver, 'post', '/make_bt_discoverable', {});
+  }
+
   async perform (receiver, method, resource, data) {
     return this.clients[receiver]({
        method,

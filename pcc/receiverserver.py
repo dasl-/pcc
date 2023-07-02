@@ -1,7 +1,9 @@
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler, HTTPStatus
 from io import BytesIO
 import json
+import os.path
 import socket
+import subprocess
 import traceback
 import urllib
 from pcc.logger import Logger
@@ -11,6 +13,12 @@ class ReceiverAPI():
 
     __hostname = socket.gethostname()
 
+    # Ensure only one process makes bluetooth discoverable at a time
+    __BT_DISCOVERABLE_LOCK_FILE = '/tmp/pcc_bt_discoverable_lock_file'
+
+    # The mtime of this file represents when we last made bluetooth discoverable
+    __BT_DISCOVERABLE_SUCCESS_FILE = '/tmp/pcc_bt_discoverable_success_file'
+
     def __init__(self):
         self.__vol_controller = VolumeController()
         self.__logger = Logger().set_namespace(self.__class__.__name__)
@@ -19,6 +27,7 @@ class ReceiverAPI():
         return {
             'vol_pct': self.__vol_controller.get_vol_pct(),
             'hostname': self.__hostname,
+            'bt_discoverable': os.path.isfile(self.__BT_DISCOVERABLE_SUCCESS_FILE),
             'success': True,
         }
 
@@ -33,6 +42,26 @@ class ReceiverAPI():
         return {
             'vol_pct': vol_pct,
             'success': True
+        }
+
+    def make_bt_discoverable(self, post_data):
+        # dbus-send --system --print-reply --type=method_call --dest=org.bluez /org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 string:Discoverable variant:boolean:true
+        success = True
+        try:
+            subprocess.check_output(
+                (f"flock --exclusive --nonblock {self.__BT_DISCOVERABLE_LOCK_FILE} --command 'dbus-send " +
+                    "--system --print-reply --type=method_call --dest=org.bluez " +
+                    "/org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 " +
+                    f"string:Discoverable variant:boolean:true && touch {self.__BT_DISCOVERABLE_SUCCESS_FILE}'"),
+                shell = True,
+                executable = '/bin/bash',
+                stderr=subprocess.STDOUT
+            ).decode("utf-8")
+        except Exception:
+            success = False
+
+        return {
+            'success': success,
         }
 
 class PccReceiverServerRequestHandler(BaseHTTPRequestHandler):
@@ -84,6 +113,8 @@ class PccReceiverServerRequestHandler(BaseHTTPRequestHandler):
 
             if self.path == '/vol_pct':
                 response = self.__api.set_vol_pct(post_data)
+            elif self.path == '/make_bt_discoverable':
+                response = self.__api.make_bt_discoverable(post_data)
             else:
                 self.__do_404()
                 return

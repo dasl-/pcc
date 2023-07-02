@@ -47,6 +47,8 @@ class App extends React.Component {
               hostname = {this.state.receivers[receiver]['hostname']}
               vol_pct = {this.state.receivers[receiver]['vol_pct']}
               setVolPct = {this.setVolPct}
+              makeBtDiscoverable = {this.makeBtDiscoverable}
+              bt_discoverable = {this.state.receivers[receiver]['bt_discoverable']}
             />
           }.bind(this))}
         </div>
@@ -56,6 +58,10 @@ class App extends React.Component {
 
   setVolPct(receiver, vol_pct, set_airplay_client_vol = false) {
     return this.apiClient.setVolPct(receiver, vol_pct, set_airplay_client_vol)
+  }
+
+  makeBtDiscoverable(receiver) {
+    return this.apiClient.makeBtDiscoverable(receiver)
   }
 
   cancelReceiverPoll(receiver) {
@@ -92,6 +98,7 @@ class App extends React.Component {
         if (response.success) {
           new_receivers[receiver]['vol_pct'] = response.vol_pct;
           new_receivers[receiver]['hostname'] = response.hostname;
+          new_receivers[receiver]['bt_discoverable'] = response.bt_discoverable;
         }
         new_receivers[receiver]['is_poll_in_progress'] = false;
         this.setState({receivers: new_receivers});

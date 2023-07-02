@@ -208,19 +208,9 @@ ul.menu li a {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.video-description {
-  color: $text-subtle;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 2;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 
-@media (min-width: 576px) {
-  .video-description {
-    display: -webkit-box !important;
-  }
+.text-subtle {
+  color: $text-subtle;
 }
 
 //Volume slider
