@@ -72,7 +72,7 @@ class Receiver extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.state.is_vol_locked && this.state.is_vol_lock_releasable) {
       var millis_since_vol_locked_marked_releasable = (new Date()).getTime() - this.state.vol_lock_marked_releasable_time;
-      if (millis_since_vol_locked_marked_releasable > (App.QUEUE_POLL_INTERVAL_MS + 500)) {
+      if (millis_since_vol_locked_marked_releasable > (App.RECEIVER_POLL_INTERVAL_MS + 500)) {
         this.releaseVolMutex();
       }
     }
