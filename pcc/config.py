@@ -5,7 +5,7 @@ from pcc.directoryutils import DirectoryUtils
 
 class Config:
 
-    __CONFIG_PATH = DirectoryUtils().root_dir + '/config.json'
+    CONFIG_PATH = DirectoryUtils().root_dir + '/config.json'
     __DEFAULT_CONFIG_PATH = DirectoryUtils().root_dir + '/default_config.json'
 
     __is_loaded = False
@@ -30,7 +30,7 @@ class Config:
         Config.__config = new_config
 
     """
-    Merges the config located at __DEFAULT_CONFIG_PATH with the config located at __CONFIG_PATH.
+    Merges the config located at __DEFAULT_CONFIG_PATH with the config located at CONFIG_PATH.
     Example:
 
     Config located at __DEFAULT_CONFIG_PATH:
@@ -49,7 +49,7 @@ class Config:
         }
     }
 
-    Config located at __CONFIG_PATH:
+    Config located at CONFIG_PATH:
     {
         "foo": {
             "bam": {
@@ -89,17 +89,17 @@ class Config:
             raise Exception(f"No config file found at: {Config.__DEFAULT_CONFIG_PATH}.")
 
         do_config_overrides_exist = False
-        if os.path.exists(Config.__CONFIG_PATH):
+        if os.path.exists(Config.CONFIG_PATH):
             do_config_overrides_exist = True
-            Config.__logger.info(f"Found overrides config file at: {Config.__CONFIG_PATH}.")
+            Config.__logger.info(f"Found overrides config file at: {Config.CONFIG_PATH}.")
         else:
-            Config.__logger.info(f"No overrides config file found at: {Config.__CONFIG_PATH}.")
+            Config.__logger.info(f"No overrides config file found at: {Config.CONFIG_PATH}.")
 
         with open(Config.__DEFAULT_CONFIG_PATH) as default_config_json:
             Config.__config = pyjson5.decode(default_config_json.read())
 
         if do_config_overrides_exist:
-            with open(Config.__CONFIG_PATH) as config_json:
+            with open(Config.CONFIG_PATH) as config_json:
                 overrides = pyjson5.decode(config_json.read())
 
                 key_stack = []
