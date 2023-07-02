@@ -3,12 +3,16 @@ import re
 import math
 
 from pcc.config import Config
+from pcc.logger import Logger
 
 # Gets and sets alsa volume
 class VolumeController:
 
     __GLOBAL_MIN_VOL_VAL = None
     __GLOBAL_MAX_VOL_VAL = None
+
+    def __init__(self):
+        self.__logger = Logger().set_namespace(self.__class__.__name__)
 
     # gets a perceptual loudness %
     # returns a float in the range [0, 100]
@@ -51,6 +55,29 @@ class VolumeController:
         subprocess.check_output(
             ('amixer', '-c', str(Config.get('sound.card', 0)), 'cset', f'numid={Config.get("sound.numid", 1)}', '--', str(vol_val))
         )
+
+        self.set_airplay_vol_pct(self, vol_pct)
+
+    # Send new volume value from airplay server to airplay client.
+    # See: https://github.com/mikebrady/shairport-sync/blob/12ad72c47fe7bb04e7250892c324ac5f5faa4071/documents/sample%20dbus%20commands#L86C1-L87
+    def set_airplay_vol_pct(self, vol_pct):
+        max_airplay_vol = 0
+        min_airplay_vol = -30
+        airplay_vol = round(min_airplay_vol - min_airplay_vol * vol_pct / 100, 1)
+        airplay_vol = min(max_airplay_vol, airplay_vol)
+        airplay_vol = max(min_airplay_vol, airplay_vol)
+
+        # dbus-send --system --print-reply --type=method_call --dest=org.gnome.ShairportSync '/org/gnome/ShairportSync' org.gnome.ShairportSync.RemoteControl.SetAirplayVolume double:-29.99
+        try:
+            res = subprocess.check_output(
+                (
+                    'dbus-send', '--system', '--print-reply', '--type=method_call', '--dest=org.gnome.ShairportSync',
+                    "'/org/gnome/ShairportSync'", 'org.gnome.ShairportSync.RemoteControl.SetAirplayVolume', f'double:{airplay_vol}'
+                ),
+                stderr=subprocess.STDOUT
+            ).decode("utf-8")
+        except Exception:
+            self.__logger.warn(f'Unable to set airplay client volume: {res}')
 
     # increments volume percentage by the specified increment. The increment should be a float in the range [0, 100]
     # Returns the new volume percent, which will be a float in the range [0, 100]
