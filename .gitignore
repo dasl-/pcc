@@ -1,0 +1,14 @@
+# Ignore other unneeded files.
+*.swp
+*~
+.project
+.DS_Store
+sftp-config.json
+sftp-config.json.bak
+__pycache__/
+config.json
+
+# these css files are built via scss
+app/src/css/custom-theme.css
+app/src/css/themes/*.css
+app/src/css/**/*.css.map

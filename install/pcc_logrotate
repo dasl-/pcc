@@ -1,0 +1,8 @@
+/var/log/pcc/*.log {
+    nocompress
+    copytruncate
+    daily
+    dateext
+    ifempty
+    rotate 7
+}

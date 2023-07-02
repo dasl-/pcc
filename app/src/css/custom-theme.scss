@@ -1,0 +1,268 @@
+
+@import "themes/commandline.scss";
+
+.bg-primary {
+  background-color: $background-primary !important;
+}
+.bg-background {
+  background-color: $background-light !important;
+}
+.bg-light {
+  background-color: $background-light !important;
+}
+.bg-dark {
+  background-color: $background-primary !important;
+}
+
+.splash {
+  width: 100%;
+  max-width:500px;
+  margin: auto;
+}
+
+/* hide menu on splash */
+.splash .input-left {
+  display:none;
+}
+
+/* logo */
+.logo {
+  color: $text-title !important;
+  box-shadow: $logo-shadow 0px 0px $logo-shadow-blur;
+  background-color: $background-primary !important;
+  box-shadow: $logo-shadow 0px 0px $logo-shadow-blur;
+  border: 1px solid $border;
+  font-size: 14px !important;
+}
+.logo-wrapper {
+  max-width: 1185px;
+  margin: auto !important;
+}
+.logo-container {
+  z-index: 10;
+  width: 100%;
+}
+
+/* stroked glyphs on bg-dark */
+.bg-light-text {
+  color: $background-light !important;
+}
+.bg-dark-text {
+  color: $background-primary !important;
+}
+.glyphicon {
+  text-stroke: 1px $text-title;
+  -webkit-text-stroke: 1px $text-title;
+  text-shadow: $icon-shadow 0px 0px $icon-shadow-blur;
+}
+.glyphicon-fill-no-stroke {
+  text-stroke: 0px $text-title;
+  -webkit-text-stroke: 0px $text-title;
+  color: $text-title !important;
+}
+
+/* overall text */
+body {
+  color: $text-title;
+}
+.text-light {
+  color: $text-main !important;
+}
+
+/* playlist */
+.playlist-video-icon-fill-color {
+  fill:$background-light;
+}
+.playlist-video-icon-path {
+  stroke: $text-title;
+  stroke-width: 3.5px;
+}
+.svg-icon {
+  -webkit-filter: drop-shadow( 0px 0px 1px $icon-shadow);
+  filter: drop-shadow( 0px 0px 1px $icon-shadow);
+}
+.skip-icon {
+  margin-left: 2px;
+}
+.playlist-expanded .skip-icon {
+  float: right;
+}
+.playlist-footer {
+  background-color: $background-primary !important;
+  border-top: 1px solid $border;
+  box-shadow: $border 0px 0px 16.5px;
+}
+.swipeable-list-item-button.play-next {
+  background-color: $text-subtle;
+}
+.swipeable-list-item-button.play-next .playlist-video-icon-fill-color {
+  fill:$text-subtle;
+}
+.swipeable-list-item-button.remove-video {
+  background-color: $background-light;
+}
+.swipeable-list-item-button.remove-video .glyphicon {
+  color: $background-primary;
+}
+
+// We need to set box-shadow and border on the .Wrapper class when the playlist is expanded,
+// because the .Wrapper has overflow:hidden, which prevents the box-shadow from showing
+// if it were set on .playlist-video-common
+.playlist-expanded .Wrapper {
+  box-shadow: 0 -#{$icon-shadow-blur} #{$icon-shadow-blur - 0.1} -#{$icon-shadow-blur} $border;
+  border-top: 1px solid $border !important;
+}
+.playlist-video-common {
+  overflow: hidden;
+  border-top: 1px solid $border !important;
+  box-shadow: 0 -#{$icon-shadow-blur} #{$icon-shadow-blur - 0.1} -#{$icon-shadow-blur} $border;
+}
+.playlist-expanded .Wrapper .playlist-video-common {
+  border-top:none !important;
+  box-shadow:none;
+}
+
+/* alert */
+.bg-success {
+  border: 1px solid $border;
+  background-color: $background-primary !important;
+  text-shadow: none;
+  box-shadow: $border 0px 0px $border-shadow-blur;
+  color: $text-main;
+}
+
+/* menu */
+.menu-wrapper {
+  position:relative;
+}
+
+ul.menu {
+  position:absolute;
+  top:40px;
+  left:-13px;
+  background-color: $background-primary;
+  box-shadow: $border 0px 0px $input-shadow-blur;
+  border: 1px solid $border;
+  border-radius: .3em;
+  padding:15px;
+  transition: .5s opacity ease-in-out;
+  opacity: 0;
+  text-align:left;
+}
+
+ul.menu.expanded {
+  opacity: 1;
+  z-index:10;
+}
+
+ul.menu li a {
+  color: $text-title;
+}
+
+/* search input */
+.input-group-wrapper {
+  background-color: $background-primary !important;
+  box-shadow: $border 0px 0px $input-shadow-blur !important;
+  border: 1px solid $border !important;
+  border-radius: .3em !important;
+  display:flex;
+  width:100%;
+}
+.form-control {
+  background-color: $background-primary !important;
+  color: $text-main !important;
+  border:0;
+}
+.form-control:focus {
+  box-shadow:none;
+}
+.input-group-text {
+  background-color: $background-primary !important;
+  text-shadow: none;
+  color: $text-main;
+  border:0;
+}
+.input-group-append {
+  margin-left:0;
+}
+
+/* search result video */
+.video-title, .video-title-no-shadow {
+  text-shadow: $icon-shadow 0px 0px $title-shadow-blur;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.video-title-no-shadow {
+  text-shadow: none;
+}
+.video-details {
+  text-shadow: none;
+  color: $text-main;
+
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.video-description {
+  color: $text-subtle;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (min-width: 576px) {
+  .video-description {
+    display: -webkit-box !important;
+  }
+}
+
+//Volume slider
+.rc-slider-handle {
+  border:1px solid $text-title;
+  box-shadow: 0px 0px 3.5px $icon-shadow, 0px 0px 0px $icon-shadow;
+  height:30px;
+  width:30px;
+  margin-top:-10px;
+  background-color: $background-light;
+  opacity:1;
+}
+.rc-slider-handle::after {
+  // make the touch area for volume slider a bigger target without affecting the appearance
+  content: "";
+  position: absolute;
+  // center this over its parent
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+}
+.rc-slider-handle:hover {
+  border:1px solid $text-title;
+  box-shadow: 0px 0px 3.5px $icon-shadow, 0px 0px 0px $icon-shadow;
+}
+.rc-slider-handle:focus {
+  border:1px solid $text-title;
+  box-shadow: 0px 0px 3.5px $icon-shadow, 0px 0px 0px $icon-shadow;
+}
+.rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+  border:1px solid $text-title;
+  box-shadow: 0px 0px 3.5px $icon-shadow, 0px 0px 0px $icon-shadow;
+}
+.rc-slider-rail {
+  border: 1px solid $text-subtle;
+  background-color: transparent;
+  height:10px;
+}
+.rc-slider-track {
+  border: 1px solid $text-subtle;
+  background-color: $text-subtle;
+  height:10px;
+}

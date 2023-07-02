@@ -1,0 +1,6 @@
+{
+    // Required, array. The hostnames of the receivers we will be controlling, e.g.:
+    //   [ "raspberrypi1.local", "raspberrypi2.local" ]
+    "receivers": [],
+
+}

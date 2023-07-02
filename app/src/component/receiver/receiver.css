@@ -1,0 +1,18 @@
+.receiver {
+    padding: 10px 0px;
+    max-width:350px;
+}
+.receiver .row {
+    padding-top: 10px;
+    padding-bottom: 4px;
+}
+input.volume {
+    width: 100%;
+}
+.vol-icon {
+    font-size:1.15rem;
+}
+.volume-container {
+    padding-left: 20px !important;
+    padding-right: 25px !important;
+}

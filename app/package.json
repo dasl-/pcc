@@ -1,0 +1,43 @@
+{
+  "name": "Pi Control Center",
+  "version": "0.1.0",
+  "private": true,
+  "//": [
+    "DEPENDENCY NOTES:",
+    "rc-slider: upgrading rc-slider has caused us some bugs in the past. Thus we hardcode the version to be conservative about upgrading. See https://github.com/dasl-/piwall2/issues/16"
+  ],
+  "dependencies": {
+    "axios": "0.27.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "5.0.1",
+    "rc-slider": "10.0.0",
+    "sass": "^1.42.1",
+    "npm-run-all": "^4.1.2"
+  },
+  "scripts": {
+    "build-css": "sass src/:src/",
+    "watch-css": "npm run build-css && sass src/:src/ --watch",
+    "start": "npm-run-all -p watch-css start-react",
+    "start-react": "react-scripts start",
+    "build-react": "react-scripts build",
+    "build": "npm-run-all -s build-css build-react",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
