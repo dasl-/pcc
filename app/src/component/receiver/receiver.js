@@ -12,11 +12,11 @@ class Receiver extends React.Component {
     super(props);
 
     this.state = {
-      bt_discoverable: this.props.bt_discoverable,
       vol_pct: this.props.vol_pct,
       is_vol_locked: false,
       is_vol_lock_releasable: true,
       vol_lock_marked_releasable_time: 0,
+      bt_discoverable: this.props.bt_discoverable,
     };
   }
 
@@ -57,6 +57,7 @@ class Receiver extends React.Component {
 
   onVolChange = (vol_pct) => {
     this.props.setVolPct(this.props.receiver, vol_pct)
+    this.setState({vol_pct: vol_pct});
   };
 
   grabVolMutex = () => {
