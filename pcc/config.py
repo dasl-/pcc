@@ -91,9 +91,9 @@ class Config:
         do_config_overrides_exist = False
         if os.path.exists(Config.__CONFIG_PATH):
             do_config_overrides_exist = True
-            Config.__logger.info(f"Found config file at: {Config.__CONFIG_PATH}.")
+            Config.__logger.info(f"Found overrides config file at: {Config.__CONFIG_PATH}.")
         else:
-            Config.__logger.info(f"No config file found at: {Config.__CONFIG_PATH}.")
+            Config.__logger.info(f"No overrides config file found at: {Config.__CONFIG_PATH}.")
 
         with open(Config.__DEFAULT_CONFIG_PATH) as default_config_json:
             Config.__config = pyjson5.decode(default_config_json.read())
@@ -118,6 +118,8 @@ class Config:
 
         if 'log_level' in Config.__config and should_set_log_level:
             Logger.set_level(Config.__config['log_level'])
+
+        Config.__logger.info(f"Loaded config: {Config.__config}.")
 
         Config.__is_loaded = True
 

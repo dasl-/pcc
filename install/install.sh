@@ -20,7 +20,7 @@ main(){
 
     # Do receiver stuff
     if [[ "$installation_type" != 'controller' ]]; then
-        pass
+        :
     fi
 
     info "Finished installation!"
