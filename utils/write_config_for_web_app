@@ -12,9 +12,8 @@ from pcc.config import Config
 from pcc.directoryutils import DirectoryUtils
 
 receivers = Config.get_or_throw('receivers')
-print(f"receivers: {receivers}")
 if not receivers:
-    raise Exception(f"No receivers were specified in {Config.CONFIG_PATH}!")
+    raise Exception(f"No receivers were specified in {Config.CONFIG_PATH}.")
 
 web_app_config = {'receivers': receivers}
 web_app_config = json.dumps(web_app_config)
