@@ -11,8 +11,9 @@ Wants=network-online.target
 Environment=HOME=/root
 ExecStart=$BASE_DIR/bin/controller
 Restart=on-failure
-StandardOutput=file:/var/log/pcc/controller.log
-StandardError=file:/var/log/pcc/controller.log
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=PCC_CONTROLLER
 
 [Install]
 WantedBy=multi-user.target

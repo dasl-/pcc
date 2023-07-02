@@ -71,10 +71,13 @@ setupLogging(){
     sudo mkdir -p /var/log/pcc
     if [[ "$installation_type" == 'controller' || "$installation_type" == 'all' ]]; then
         sudo touch /var/log/pcc/controller.log
+        sudo cp "$BASE_DIR"/install/pcc_controller_syslog.conf /etc/rsyslog.d
     fi
     if [[ "$installation_type" == 'receiver' || "$installation_type" == 'all' ]]; then
         sudo touch /var/log/pcc/receiver.log
+        sudo cp "$BASE_DIR"/install/pcc_receiver_syslog.conf /etc/rsyslog.d
     fi
+    sudo systemctl restart rsyslog
 
     # logrotate
     sudo cp "$BASE_DIR"/install/pcc_logrotate /etc/logrotate.d

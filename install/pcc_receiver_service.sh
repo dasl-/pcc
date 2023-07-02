@@ -12,8 +12,9 @@ Environment=HOME=/root
 # Command to execute when the service is started
 ExecStart=$BASE_DIR/bin/receiver
 Restart=on-failure
-StandardOutput=file:/var/log/pcc/receiver.log
-StandardError=file:/var/log/pcc/receiver.log
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=PCC_RECEIVER
 
 [Install]
 WantedBy=multi-user.target
