@@ -1,8 +1,6 @@
 import React from 'react';
 import APIClient from 'api';
 
-// import Content from './content';
-
 import config from 'config.json';
 
 import './app.css';
@@ -100,7 +98,7 @@ class App extends React.Component {
   cloneReceivers() {
     var new_receivers = { ...this.state.receivers }
     for (var receiver in new_receivers) {
-      new_receivers[receiver] = { ...receiver }
+      new_receivers[receiver] = { ...new_receivers[receiver] }
     }
     return new_receivers;
   }
