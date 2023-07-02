@@ -1,7 +1,7 @@
 import os
 import pyjson5
-from pifi.logger import Logger
-from pifi.directoryutils import DirectoryUtils
+from pcc.logger import Logger
+from pcc.directoryutils import DirectoryUtils
 
 class Config:
 

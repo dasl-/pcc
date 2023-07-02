@@ -2,7 +2,7 @@ import subprocess
 import re
 import math
 
-from pifi.config import Config
+from pcc.config import Config
 
 # Gets and sets alsa volume
 class VolumeController:

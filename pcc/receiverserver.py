@@ -4,7 +4,7 @@ import json
 import traceback
 import urllib
 from pcc.logger import Logger
-from pifi.volumecontroller import VolumeController
+from pcc.volumecontroller import VolumeController
 
 class ReceiverAPI():
 

@@ -2,7 +2,7 @@ import os
 
 class DirectoryUtils:
 
-    # The directory that you cloned the pifi repo into. E.g. "/home/<USER>/pifi".
+    # The directory that you cloned the pcc repo into. E.g. "/home/<USER>/pcc".
     root_dir = None
 
     def __init__(self):
