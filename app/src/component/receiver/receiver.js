@@ -10,8 +10,6 @@ class Receiver extends React.Component {
   constructor(props) {
     super(props);
 
-    this.display_name = this.props.receiver.substring(0, this.props.receiver.lastIndexOf('.'));
-
     this.state = {
       vol_pct: this.props.vol_pct,
       is_vol_locked: false,
@@ -23,7 +21,7 @@ class Receiver extends React.Component {
   render() {
     return (
       <div className='receiver'>
-        <h6>{this.display_name}</h6>
+        <h6>{this.props.hostname}</h6>
         <div className='row'>
           <div className='col-1 p-0 text-right'><span className='glyphicon glyphicon-volume-down bg-light-text vol-icon' aria-hidden='true' /></div>
           <div className='col-10 volume-container'>

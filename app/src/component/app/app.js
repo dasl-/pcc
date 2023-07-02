@@ -44,6 +44,7 @@ class App extends React.Component {
             return <Receiver
               key = {index}
               receiver = {receiver}
+              hostname = {this.state.receivers[receiver]['hostname']}
               vol_pct = {this.state.receivers[receiver]['vol_pct']}
               setVolPct = {this.setVolPct}
             />
@@ -75,20 +76,22 @@ class App extends React.Component {
     new_receivers[receiver]['is_poll_in_progress'] = true;
     this.setState({receivers: new_receivers});
 
-    var vol_pct = null;
+    var response = null;
     return this.apiClient
       .getReceiverData(receiver)
       .then((data) => {
         if (data.success) {
-          vol_pct = +(data.vol_pct.toFixed(0));
+          data.vol_pct = +(data.vol_pct.toFixed(0));
+          response = data;
         }
       })
-      .finally((data) => {
+      .finally(() => {
         this.receiver_poll_timeout[receiver] = setTimeout(this.getReceiverData.bind(this, receiver), App.RECEIVER_POLL_INTERVAL_MS);
 
         var new_receivers = this.cloneReceivers()
-        if (vol_pct !== null) {
-          new_receivers[receiver]['vol_pct'] = vol_pct;
+        if (response.success) {
+          new_receivers[receiver]['vol_pct'] = response.vol_pct;
+          new_receivers[receiver]['hostname'] = response.hostname;
         }
         new_receivers[receiver]['is_poll_in_progress'] = false;
         this.setState({receivers: new_receivers});

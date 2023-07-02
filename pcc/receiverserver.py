@@ -1,6 +1,7 @@
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler, HTTPStatus
 from io import BytesIO
 import json
+import socket
 import traceback
 import urllib
 from pcc.logger import Logger
@@ -8,15 +9,18 @@ from pcc.volumecontroller import VolumeController
 
 class ReceiverAPI():
 
+    __hostname = socket.gethostname()
+
     def __init__(self):
         self.__vol_controller = VolumeController()
         self.__logger = Logger().set_namespace(self.__class__.__name__)
 
     def get_receiver_data(self):
-        response_details = {}
-        response_details['vol_pct'] = self.__vol_controller.get_vol_pct()
-        response_details['success'] = True
-        return response_details
+        return {
+            'vol_pct': self.__vol_controller.get_vol_pct(),
+            'hostname': self.__hostname,
+            'success': True,
+        }
 
     def set_vol_pct(self, post_data):
         vol_pct = int(post_data['vol_pct'])
