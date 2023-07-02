@@ -16,7 +16,7 @@ class APIClient {
     return this.perform(receiver, 'get', '/receiver_data');
   }
 
-  setVolPct(receiver, vol_pct, set_airplay_client_vol = false) {
+  setVolPct(receiver, vol_pct, set_airplay_client_vol) {
     return this.perform(receiver, 'post', '/vol_pct', {
       vol_pct: vol_pct,
       set_airplay_client_vol: set_airplay_client_vol

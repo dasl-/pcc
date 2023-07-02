@@ -54,8 +54,8 @@ class App extends React.Component {
     );
   }
 
-  setVolPct(receiver, vol_pct) {
-    return this.apiClient.setVolPct(receiver, vol_pct)
+  setVolPct(receiver, vol_pct, set_airplay_client_vol = false) {
+    return this.apiClient.setVolPct(receiver, vol_pct, set_airplay_client_vol)
   }
 
   cancelReceiverPoll(receiver) {
