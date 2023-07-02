@@ -56,7 +56,7 @@ class VolumeController:
             ('amixer', '-c', str(Config.get('sound.card', 0)), 'cset', f'numid={Config.get("sound.numid", 1)}', '--', str(vol_val))
         )
 
-        self.set_airplay_vol_pct(self, vol_pct)
+        self.set_airplay_vol_pct(vol_pct)
 
     # Send new volume value from airplay server to airplay client.
     # See: https://github.com/mikebrady/shairport-sync/blob/12ad72c47fe7bb04e7250892c324ac5f5faa4071/documents/sample%20dbus%20commands#L86C1-L87
@@ -72,12 +72,12 @@ class VolumeController:
             res = subprocess.check_output(
                 (
                     'dbus-send', '--system', '--print-reply', '--type=method_call', '--dest=org.gnome.ShairportSync',
-                    "'/org/gnome/ShairportSync'", 'org.gnome.ShairportSync.RemoteControl.SetAirplayVolume', f'double:{airplay_vol}'
+                    '/org/gnome/ShairportSync', 'org.gnome.ShairportSync.RemoteControl.SetAirplayVolume', f'double:{airplay_vol}'
                 ),
                 stderr=subprocess.STDOUT
             ).decode("utf-8")
-        except Exception:
-            self.__logger.warn(f'Unable to set airplay client volume: {res}')
+        except Exception as e:
+            self.__logger.warning(f'Unable to set airplay client volume: {e}')
 
     # increments volume percentage by the specified increment. The increment should be a float in the range [0, 100]
     # Returns the new volume percent, which will be a float in the range [0, 100]
@@ -118,10 +118,9 @@ class VolumeController:
             # These values are in millibels.
             VolumeController.__GLOBAL_MIN_VOL_VAL = -10239
             VolumeController.__GLOBAL_MAX_VOL_VAL = 400
-            return
-
-        VolumeController.__GLOBAL_MIN_VOL_VAL = int(m.group(1))
-        VolumeController.__GLOBAL_MAX_VOL_VAL = int(m.group(2))
+        else:
+            VolumeController.__GLOBAL_MIN_VOL_VAL = int(m.group(1))
+            VolumeController.__GLOBAL_MAX_VOL_VAL = int(m.group(2))
 
     @staticmethod
     def __should_adjust_volume_logarithmically():
@@ -149,7 +148,7 @@ class VolumeController:
     # Attempt to autodetect if the default soundcard is being used, based on config.json values.
     @staticmethod
     def __is_internal_soundcard_being_used():
-        return Config.get('sound.card') == 0 and Config.get('sound.numid') == 1
+        return Config.get('sound.card', 0) == 0 and Config.get('sound.numid', 1) == 1
 
     # Return volume value. Returns an integer in the range
     # [VolumeController.__get_global_min_vol_val(), VolumeController.__get_limited_max_vol_val()]
