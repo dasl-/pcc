@@ -18,7 +18,7 @@ from pcc.receiverserver import ReceiverAPI
 class Sweeper():
 
     # How long to leave bluetooth as discoverable.
-    BT_DISCOVERABLE_TIMEOUT_S = 30
+    BT_DISCOVERABLE_TIMEOUT_S = 60
 
     def __init__(self):
         self.__logger = Logger().set_namespace(self.__class__.__name__)
@@ -30,14 +30,14 @@ class Sweeper():
                 continue
 
             cmd = DirectoryUtils().root_dir + '/utils/sweeper_bt_cleanup.py'
-            try:
-                subprocess.check_output(
-                    (f"flock --exclusive --nonblock {ReceiverAPI.BT_DISCOVERABLE_LOCK_FILE} --command '{cmd}'"),
-                    shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
-                ).decode("utf-8")
-            except Exception as e:
-                # We expect some amount of exceptions due to race conditions. E.g., we could have raced with the
-                # flock in ReceiverAPI and failed to get the exclusive lock.
-                self.__logger.info(f"Got exception: {e}.")
+            proc = subprocess.Popen(
+                (f"flock --exclusive --nonblock {ReceiverAPI.BT_DISCOVERABLE_LOCK_FILE} --command '{cmd}'"),
+                shell = True, executable = '/bin/bash'
+            )
+
+            while proc.poll() is None:
+                time.sleep(0.1)
+            if proc.returncode != 0:
+                self.__logger.error(f'The sweeper_bt_cleanup script exited non-zero: {proc.returncode}.')
 
             time.sleep(5)
