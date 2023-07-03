@@ -27,6 +27,10 @@ class APIClient {
     return this.perform(receiver, 'post', '/make_bt_discoverable', {});
   }
 
+  disconnectClients(receiver) {
+    return this.perform(receiver, 'post', '/disconnect_clients', {});
+  }
+
   async perform (receiver, method, resource, data) {
     return this.clients[receiver]({
        method,

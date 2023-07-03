@@ -27,6 +27,7 @@ class App extends React.Component {
     this.apiClient = new APIClient(config.receivers);
     this.setVolPct = this.setVolPct.bind(this);
     this.makeBtDiscoverable = this.makeBtDiscoverable.bind(this);
+    this.disconnectClients = this.disconnectClients.bind(this);
     this.receiver_poll_timeout = {};
   }
 
@@ -50,6 +51,7 @@ class App extends React.Component {
               setVolPct = {this.setVolPct}
               makeBtDiscoverable = {this.makeBtDiscoverable}
               bt_discoverable = {this.state.receivers[receiver]['bt_discoverable']}
+              disconnectClients = {this.disconnectClients}
             />
           }.bind(this))}
         </div>
@@ -62,7 +64,11 @@ class App extends React.Component {
   }
 
   makeBtDiscoverable(receiver) {
-    return this.apiClient.makeBtDiscoverable(receiver)
+    return this.apiClient.makeBtDiscoverable(receiver);
+  }
+
+  disconnectClients(receiver) {
+    return this.apiClient.disconnectClients(receiver);
   }
 
   cancelReceiverPoll(receiver) {

@@ -13,6 +13,8 @@ class ReceiverAPI():
 
     __hostname = socket.gethostname()
 
+    __RESTART_BT_SERVICES_CMD = 'sudo systemctl restart bluetooth.service && sudo systemctl restart bt-speaker.service'
+
     # Ensure only one process makes bluetooth (un)discoverable at a time
     BT_DISCOVERABLE_LOCK_FILE = '/tmp/pcc_bt_discoverable_lock_file'
 
@@ -45,14 +47,32 @@ class ReceiverAPI():
         }
 
     def make_bt_discoverable(self, post_data):
-        # dbus-send --system --print-reply --type=method_call --dest=org.bluez /org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 string:Discoverable variant:boolean:true
         success = True
+        self.__logger.info("Making bluetooth discoverable...")
         try:
+            # dbus-send --system --print-reply --type=method_call --dest=org.bluez /org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 string:Discoverable variant:boolean:true
             subprocess.check_output(
-                (f"flock --exclusive --nonblock {self.BT_DISCOVERABLE_LOCK_FILE} --command 'dbus-send " +
-                    "--system --print-reply --type=method_call --dest=org.bluez " +
+                (f"flock --exclusive --nonblock {self.BT_DISCOVERABLE_LOCK_FILE} --command '" +
+                    # Restart bluetooth and bt-speaker because they can get flakey and won't accept connections after a day or so.
+                    f"{self.__RESTART_BT_SERVICES_CMD} && sleep 1 && "
+                    "dbus-send --system --print-reply --type=method_call --dest=org.bluez " +
                     "/org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 " +
                     f"string:Discoverable variant:boolean:true && touch {self.BT_DISCOVERABLE_SUCCESS_FILE}'"),
+                shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
+            ).decode("utf-8")
+        except Exception:
+            success = False
+
+        return {
+            'success': success,
+        }
+
+    def disconnect_clients(self, post_data):
+        success = True
+        self.__logger.info("Disconnecting clients by restarting bluetooth and shairport-sync services...")
+        try:
+            subprocess.check_output(
+                f"{self.__RESTART_BT_SERVICES_CMD} && sudo systemctl restart shairport-sync.service",
                 shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
             ).decode("utf-8")
         except Exception:
