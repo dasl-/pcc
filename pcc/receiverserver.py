@@ -133,6 +133,8 @@ class PccReceiverServerRequestHandler(BaseHTTPRequestHandler):
                 response = self.__api.set_vol_pct(post_data)
             elif self.path == '/make_bt_discoverable':
                 response = self.__api.make_bt_discoverable(post_data)
+            elif self.path == '/disconnect_clients':
+                response = self.__api.disconnect_clients(post_data)
             else:
                 self.__do_404()
                 return
