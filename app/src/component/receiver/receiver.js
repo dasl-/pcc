@@ -23,7 +23,7 @@ class Receiver extends React.Component {
     var bluetooth_class = (this.props.bt_discoverable ? 'bt-discoverable' : 'bt-not-discoverable') + ' bi bi-bluetooth clickable receiver-icon';
     var connected_client_elements = '';
     if (this.props.shairport_sync_client_name) {
-      connected_client_elements = <span className="text-subtle"><span style={{"margin-right":"4px",}} className='glyphicon glyphicon-link receiver-icon' aria-hidden='true' /><span>{this.props.shairport_sync_client_name}</span></span>;
+      connected_client_elements = <span className="text-subtle"><span style={{"margin-left":0,"margin-right":"4px",}} className='glyphicon glyphicon-link receiver-icon' aria-hidden='true' /><span>{this.props.shairport_sync_client_name}</span></span>;
     }
     return (
       <div className='receiver'>
@@ -31,8 +31,8 @@ class Receiver extends React.Component {
           {this.props.hostname}
           <svg onClick={this.handleBluetoothClick} xmlns="http://www.w3.org/2000/svg" fill="currentColor" className={bluetooth_class} viewBox="0 0 16 16"><path fillRule="evenodd" d="m8.543 3.948 1.316 1.316L8.543 6.58V3.948Zm0 8.104 1.316-1.316L8.543 9.42v2.632Zm-1.41-4.043L4.275 5.133l.827-.827L7.377 6.58V1.128l4.137 4.136L8.787 8.01l2.745 2.745-4.136 4.137V9.42l-2.294 2.274-.827-.827L7.133 8.01ZM7.903 16c3.498 0 5.904-1.655 5.904-8.01 0-6.335-2.406-7.99-5.903-7.99C4.407 0 2 1.655 2 8.01 2 14.344 4.407 16 7.904 16Z"/></svg>
           <span onClick={this.handleDisconnectClick} style={{color: "#d94848"}} className='glyphicon glyphicon-remove clickable receiver-icon' aria-hidden='true' />
-          {connected_client_elements}
          </h6>
+        {connected_client_elements}
         <div className='row'>
           <div className='col-1 p-0 text-right'><span className='glyphicon glyphicon-volume-down bg-light-text vol-icon' aria-hidden='true' /></div>
           <div className='col-10 volume-container'>
