@@ -1,6 +1,10 @@
 {
-    // Required, array. The hostnames of the receivers we will be controlling, e.g.:
-    //   [ "raspberrypi1.local", "raspberrypi2.local" ]
+    // Required, array. The IP addresses of the receivers we will be controlling, e.g.:
+    //   [ "192.168.0.2", "192.168.0.3" ]
+    // We recommend using IP addresses rather than hostnames (e.g. "raspberrypi1.local").
+    // This is because ".local" DNS resolution is quite slow on iOS devices (~5 seconds).
+    // Furthermore, android does not support ".local" DNS resolution. So while this would
+    // work fine for desktop, it would not be a good mobile experience.
     "receivers": [],
 
 }
