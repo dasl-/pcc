@@ -6,8 +6,8 @@ from pcc.logger import Logger
 #   gdbus introspect --system --dest org.gnome.ShairportSync --object-path /org/gnome/ShairportSync
 class DbusClient():
 
-    __SPS_DBUS_CMD   =  "dbus-send --system --print-reply --type=method_call --dest=org.gnome.ShairportSync '/org/gnome/ShairportSync'"
-    __BLUEZ_DBUS_CMD =  "dbus-send --system --print-reply --type=method_call --dest=org.bluez '/org/bluez/hci0'"
+    __SPS_DBUS_CMD   =  "dbus-send --system --print-reply=literal --type=method_call --dest=org.gnome.ShairportSync '/org/gnome/ShairportSync'"
+    __BLUEZ_DBUS_CMD =  "dbus-send --system --print-reply=literal --type=method_call --dest=org.bluez '/org/bluez/hci0'"
 
     def __init__(self):
         self.__logger = Logger().set_namespace(self.__class__.__name__)
@@ -56,7 +56,7 @@ class DbusClient():
             else:
                 return None
 
-        m = re.search(r"^\s+variant\s+string\s+(.*)", res)
+        m = re.search(r"^\s+variant\s+(.*)", res)
         if m is None:
             self.__logger.warning('Unable to parse shairport-sync client name')
             if throw:
@@ -64,7 +64,7 @@ class DbusClient():
             else:
                 return None
         else:
-            return m.group(1).strip('"')
+            return m.group(1)
 
     def get_shairport_sync_player_state(self, return_cmd = False, throw = False):
         # dbus-send --print-reply --system --dest=org.gnome.ShairportSync /org/gnome/ShairportSync org.freedesktop.DBus.Properties.Get string:org.gnome.ShairportSync.RemoteControl string:PlayerState
@@ -80,7 +80,7 @@ class DbusClient():
             else:
                 return None
 
-        m = re.search(r"^\s+variant\s+string\s+(.*)", res)
+        m = re.search(r"^\s+variant\s+(.*)", res)
         if m is None:
             self.__logger.warning('Unable to parse shairport-sync player state')
             if throw:
@@ -88,4 +88,4 @@ class DbusClient():
             else:
                 return None
         else:
-            return m.group(1).strip('"')
+            return m.group(1)
