@@ -3,6 +3,7 @@ import re
 import math
 
 from pcc.config import Config
+from pcc.dbusclient import DbusClient
 from pcc.logger import Logger
 
 # Gets and sets alsa volume
@@ -13,6 +14,7 @@ class VolumeController:
 
     def __init__(self):
         self.__logger = Logger().set_namespace(self.__class__.__name__)
+        self.__dbus_client = DbusClient()
 
     # gets a perceptual loudness %
     # returns a float in the range [0, 100]
@@ -64,18 +66,7 @@ class VolumeController:
         airplay_vol = round(min_airplay_vol - min_airplay_vol * vol_pct / 100, 1)
         airplay_vol = min(max_airplay_vol, airplay_vol)
         airplay_vol = max(min_airplay_vol, airplay_vol)
-
-        # dbus-send --system --print-reply --type=method_call --dest=org.gnome.ShairportSync '/org/gnome/ShairportSync' org.gnome.ShairportSync.RemoteControl.SetAirplayVolume double:-29.99
-        try:
-            res = subprocess.check_output(
-                (
-                    'dbus-send', '--system', '--print-reply', '--type=method_call', '--dest=org.gnome.ShairportSync',
-                    '/org/gnome/ShairportSync', 'org.gnome.ShairportSync.RemoteControl.SetAirplayVolume', f'double:{airplay_vol}'
-                ),
-                stderr=subprocess.STDOUT
-            ).decode("utf-8")
-        except Exception as e:
-            self.__logger.warning(f'Unable to set airplay client volume: {e}')
+        self.__dbus_client.set_airplay_vol(airplay_vol)
 
     # increments volume percentage by the specified increment. The increment should be a float in the range [0, 100]
     # Returns the new volume percent, which will be a float in the range [0, 100]

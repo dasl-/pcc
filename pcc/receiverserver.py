@@ -6,6 +6,8 @@ import socket
 import subprocess
 import traceback
 import urllib
+
+from pcc.dbusclient import DbusClient
 from pcc.logger import Logger
 from pcc.volumecontroller import VolumeController
 
@@ -24,12 +26,28 @@ class ReceiverAPI():
     def __init__(self):
         self.__vol_controller = VolumeController()
         self.__logger = Logger().set_namespace(self.__class__.__name__)
+        self.__dbus_client = DbusClient()
 
     def get_receiver_data(self):
+        shairport_sync_client_name = self.__dbus_client.get_shairport_sync_client_name()
+        shairport_sync_player_state = self.__dbus_client.get_shairport_sync_player_state()
+        if (
+            not shairport_sync_player_state or not shairport_sync_client_name or
+
+            # If the state is neither 'Playing' nor 'Paused' (i.e. it must be 'Stopped'), then
+            # the client may or may not be disconnected. There is no way to tell if the client
+            # is disconnected or merely connected but stopped AFAIK.
+            (shairport_sync_player_state != 'Playing' and shairport_sync_player_state != 'Paused')
+        ):
+            shairport_sync_client_name = False
+            shairport_sync_player_state = False
+
         return {
             'vol_pct': self.__vol_controller.get_vol_pct(),
             'hostname': self.__hostname,
             'bt_discoverable': os.path.isfile(self.BT_DISCOVERABLE_SUCCESS_FILE),
+            'shairport_sync_client_name': shairport_sync_client_name,
+            'shairport_sync_player_state': shairport_sync_player_state,
             'success': True,
         }
 
@@ -49,15 +67,13 @@ class ReceiverAPI():
     def make_bt_discoverable(self, post_data):
         success = True
         self.__logger.info("Making bluetooth discoverable...")
+        dbus_discoverable_cmd = self.__dbus_client.set_bluetooth_discoverable(True, return_cmd = True)
         try:
-            # dbus-send --system --print-reply --type=method_call --dest=org.bluez /org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 string:Discoverable variant:boolean:true
             subprocess.check_output(
                 (f"flock --exclusive --nonblock {self.BT_DISCOVERABLE_LOCK_FILE} --command '" +
                     # Restart bluetooth and bt-speaker because they can get flakey and won't accept connections after a day or so.
-                    f"{self.__RESTART_BT_SERVICES_CMD} && sleep 1 && "
-                    "dbus-send --system --print-reply --type=method_call --dest=org.bluez " +
-                    "/org/bluez/hci0 org.freedesktop.DBus.Properties.Set string:org.bluez.Adapter1 " +
-                    f"string:Discoverable variant:boolean:true && touch {self.BT_DISCOVERABLE_SUCCESS_FILE}'"),
+                    f"{self.__RESTART_BT_SERVICES_CMD} && sleep 1 && {dbus_discoverable_cmd} && " +
+                    f"touch {self.BT_DISCOVERABLE_SUCCESS_FILE}'"),
                 shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
             ).decode("utf-8")
         except Exception:
