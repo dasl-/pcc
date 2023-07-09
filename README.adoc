@@ -3,10 +3,7 @@
 :toclevels: 5
 
 ## dsh to install or update pcc on multiple pis:
-Controller on study.local.
-....
-dsh --remoteshell ssh --remoteshellopt '-o UserKnownHostsFile=/dev/null' --remoteshellopt '-o StrictHostKeyChecking=no' --remoteshellopt '-o LogLevel=ERROR' --concurrent-shell --show-machine-names --machine pi@study.local,pi@pifi.local,pi@piwall10.local,pi@kitchen.local,pi@bedroom.local 'TYPE="receiver"; [[ $(hostname) == study ]] && TYPE="all" ; cd /home/pi/development/pcc && git pull && /home/pi/development/pcc/install/install_dependencies.sh -t "$TYPE" && /home/pi/development/pcc/install/install.sh -t "$TYPE" ; dsh --remoteshell ssh --remoteshellopt '-o UserKnownHostsFile=/dev/null' --remoteshellopt '-o StrictHostKeyChecking=no' --remoteshellopt '-o LogLevel=ERROR' --concurrent-shell --show-machine-names --machine pi@study.local,pi@pifi.local,pi@piwall10.local,pi@kitchen.local,pi@bedroom.local "sudo systemctl status 'pcc_*'"
-....
+See: https://github.com/dasl-/pitools/tree/main/pcc
 
 ## config file
 ....
