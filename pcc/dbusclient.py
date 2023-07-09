@@ -4,6 +4,8 @@ from pcc.logger import Logger
 
 # Explore available dbus commands via (for example):
 #   gdbus introspect --system --dest org.gnome.ShairportSync --object-path /org/gnome/ShairportSync
+#
+# See also: https://github.com/mikebrady/shairport-sync/blob/master/documents/sample%20dbus%20commands
 class DbusClient():
 
     __SPS_DBUS_CMD   =  "dbus-send --system --print-reply=literal --type=method_call --dest=org.gnome.ShairportSync '/org/gnome/ShairportSync'"
@@ -12,7 +14,29 @@ class DbusClient():
     def __init__(self):
         self.__logger = Logger().set_namespace(self.__class__.__name__)
 
-    # vol should be in the range [-30, 0]
+    # vol: should be in the range [-30, 0]
+    #
+    # Notes on the 'org.gnome.ShairportSync.RemoteControl.SetAirplayVolume' API:
+    # * Controls iOS client properly
+    # * Doesn't control macOS client in systemwide airplay mode
+    # * When iOS client is connected to multiple servers (multiroom), when the client receives a
+    #   volume change message from a given server, the client attempts to maintain relative
+    #   volume levels across servers. So the client will then adjust the volume of all other
+    #   servers it is connected to. And this implementation is buggy / wacky, so sometimes
+    #   unexpected adjustments occur.
+    #
+    # Notes on AdvancedRemoteControl API ('org.gnome.ShairportSync.AdvancedRemoteControl.SetVolume'):
+    # * The advanced remote control API might be able to adjust the volume of just one server when a
+    #   client is connected to multiple servers (multiroom)
+    # * But the advanced remote control API is not well supported. My iphone doesn't seem to support it, nor does
+    #   my macOS laptop when connected in systemwide airplay mode, nor does my macOS laptop when connected via
+    #   Music app.
+    # * % dbus-send --print-reply --system --dest=org.gnome.ShairportSync /org/gnome/ShairportSync org.freedesktop.DBus.Properties.Get string:org.gnome.ShairportSync.AdvancedRemoteControl string:Available
+    #      method return time=1688884569.765822 sender=:1.4963 -> destination=:1.6096 serial=1231 reply_serial=2
+    #      variant       boolean false
+    # * See https://github.com/mikebrady/shairport-sync/blob/12ad72c47fe7bb04e7250892c324ac5f5faa4071/documents/sample%20dbus%20commands#L95-L97
+    # * See https://github.com/mikebrady/shairport-sync/issues/1509#issuecomment-1200961116
+    # * See https://github.com/mikebrady/shairport-sync/discussions/1352#discussioncomment-1790518
     def set_airplay_vol(self, vol, return_cmd = False, throw = False):
         # dbus-send --system --print-reply --type=method_call --dest=org.gnome.ShairportSync '/org/gnome/ShairportSync' org.gnome.ShairportSync.RemoteControl.SetAirplayVolume double:-29.99
         cmd = f"{self.__SPS_DBUS_CMD} org.gnome.ShairportSync.RemoteControl.SetAirplayVolume double:{vol}"
