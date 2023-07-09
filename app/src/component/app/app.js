@@ -51,6 +51,8 @@ class App extends React.Component {
               setVolPct = {this.setVolPct}
               makeBtDiscoverable = {this.makeBtDiscoverable}
               bt_discoverable = {this.state.receivers[receiver]['bt_discoverable']}
+              shairport_sync_client_name = {this.state.receivers[receiver]['shairport_sync_client_name']}
+              shairport_sync_player_state = {this.state.receivers[receiver]['shairport_sync_player_state']}
               disconnectClients = {this.disconnectClients}
             />
           }.bind(this))}
@@ -106,6 +108,8 @@ class App extends React.Component {
           new_receivers[receiver]['vol_pct'] = response.vol_pct;
           new_receivers[receiver]['hostname'] = response.hostname;
           new_receivers[receiver]['bt_discoverable'] = response.bt_discoverable;
+          new_receivers[receiver]['shairport_sync_client_name'] = response.shairport_sync_client_name;
+          new_receivers[receiver]['shairport_sync_player_state'] = response.shairport_sync_player_state;
         }
         new_receivers[receiver]['is_poll_in_progress'] = false;
         this.setState({receivers: new_receivers});

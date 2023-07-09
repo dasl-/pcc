@@ -67,16 +67,16 @@ input.volume {
 }
 
 /* Animate icon presses */
-.receiver-icon {
+.clickable.receiver-icon {
     position: relative;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     overflow: hidden;
 }
-.receiver-icon:hover {
+.clickable.receiver-icon:hover {
     cursor:pointer;
 }
-.receiver-icon:after {
+.clickable.receiver-icon:after {
   content: "";
   background: white;
   display: block;
@@ -88,7 +88,7 @@ input.volume {
   opacity: 0;
   transition: all 0.8s
 }
-.receiver-icon:active:after {
+.clickable.receiver-icon:active:after {
   padding: 0;
   margin: 0;
   opacity: 1;
