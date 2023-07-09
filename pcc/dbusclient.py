@@ -48,7 +48,7 @@ class DbusClient():
         if return_cmd:
             return cmd
         try:
-            res = subprocess.check_output(cmd, shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT).decode("utf-8")
+            res = subprocess.check_output(cmd, shell = True, executable = '/bin/bash').decode("utf-8")
         except Exception as e:
             self.__logger.warning(f'Unable to get shairport-sync client name: {e}')
             if throw:
@@ -72,7 +72,7 @@ class DbusClient():
         if return_cmd:
             return cmd
         try:
-            res = subprocess.check_output(cmd, shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT).decode("utf-8")
+            res = subprocess.check_output(cmd, shell = True, executable = '/bin/bash').decode("utf-8")
         except Exception as e:
             self.__logger.warning(f'Unable to get shairport-sync client name: {e}')
             if throw:
