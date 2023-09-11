@@ -78,7 +78,16 @@ installNode(){
     # See: https://github.com/nodesource/distributions#installation-instructions
     sudo apt -y install ca-certificates curl gnupg
     sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+    # We added the --no-tty flag to gpg to hopefully prevent errors like this:
+    #
+    # gpg: cannot open '/dev/tty': No such device or address
+    # (23) Failed writing body
+    # Error in install_dependencies.sh at line number: 81 with exit code: 2
+    #
+    # We got these errors the 2nd time we ran the installation script, from a dsh started from my laptop.
+    # For some reason there were no errors the first time we ran the installation script.
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --no-tty --dearmor -o /etc/apt/keyrings/nodesource.gpg
 
     local NODE_MAJOR=18
     local nodesource_list_file="/etc/apt/sources.list.d/nodesource.list"
