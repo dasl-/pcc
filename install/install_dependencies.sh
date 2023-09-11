@@ -75,9 +75,19 @@ installNode(){
 
     # Install node and npm. Installing this with the OS's default packages provided by apt installs a pretty old
     # version of node and npm. We need a newer version.
-    # See: https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo bash -
-    sudo apt-get install -y nodejs
+    # See: https://github.com/nodesource/distributions#installation-instructions
+    sudo apt -y install ca-certificates curl gnupg
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+    local NODE_MAJOR=18
+    local nodesource_list_file="/etc/apt/sources.list.d/nodesource.list"
+    local nodesource_list_text="deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main"
+    if ! grep -q "^$nodesource_list_text" $nodesource_list_file ; then
+        echo "$nodesource_list_text" | sudo tee "$nodesource_list_file"
+    fi
+    sudo apt update
+    sudo apt -y install nodejs
 
     info "\\nInstalling react app dependencies..."
     # TODO: when installing from scratch on a fresh OS installation, this step once failed with
