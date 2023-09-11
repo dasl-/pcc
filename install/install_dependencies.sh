@@ -79,7 +79,7 @@ installNode(){
     sudo apt -y install ca-certificates curl gnupg
     sudo mkdir -p /etc/apt/keyrings
 
-    # We added the --no-tty flag to gpg to hopefully prevent errors like this:
+    # We added the `--batch --yes` flags to gpg to hopefully prevent errors like this:
     #
     # gpg: cannot open '/dev/tty': No such device or address
     # (23) Failed writing body
@@ -87,7 +87,9 @@ installNode(){
     #
     # We got these errors the 2nd time we ran the installation script, from a dsh started from my laptop.
     # For some reason there were no errors the first time we ran the installation script.
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --no-tty --dearmor -o /etc/apt/keyrings/nodesource.gpg
+    #
+    # See: https://github.com/gravitational/teleport/issues/9726
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --batch --yes --dearmor -o /etc/apt/keyrings/nodesource.gpg
 
     local NODE_MAJOR=18
     local nodesource_list_file="/etc/apt/sources.list.d/nodesource.list"
