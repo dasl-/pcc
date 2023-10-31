@@ -68,11 +68,15 @@ class ReceiverAPI():
         success = True
         self.__logger.info("Making bluetooth discoverable...")
         dbus_discoverable_cmd = self.__dbus_client.set_bluetooth_discoverable(True, return_cmd = True)
+
+        # We tried using 1s sleep previously, and it was too short - about half the time, on the study pi,
+        # it would not properly make BT discoverable. Clients would not find it.
+        sleep_s = 3
         try:
             subprocess.check_output(
                 (f"flock --exclusive --nonblock {self.BT_DISCOVERABLE_LOCK_FILE} --command '" +
                     # Restart bluetooth and bt-speaker because they can get flakey and won't accept connections after a day or so.
-                    f"{self.__RESTART_BT_SERVICES_CMD} && sleep 1 && {dbus_discoverable_cmd} && " +
+                    f"{self.__RESTART_BT_SERVICES_CMD} && sleep {sleep_s} && {dbus_discoverable_cmd} && " +
                     f"touch {self.BT_DISCOVERABLE_SUCCESS_FILE}'"),
                 shell = True, executable = '/bin/bash', stderr=subprocess.STDOUT
             ).decode("utf-8")
