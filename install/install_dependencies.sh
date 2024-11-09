@@ -99,9 +99,9 @@ installNode(){
 
     info "\\nInstalling react app dependencies..."
 
-    # Limit RAM to 768 MB in attempts to avoid OOM errors: https://gist.github.com/dasl-/5abdd44806ff75f644daa9bc46b69b3e
+    # Limit RAM to 640 MB in attempts to avoid OOM errors: https://gist.github.com/dasl-/5abdd44806ff75f644daa9bc46b69b3e
     # See: https://stackoverflow.com/a/40939496
-    node --max-old-space-size=768 $(which npm) install --prefix "$BASE_DIR/app"
+    node --max-old-space-size=640 $(which npm) install --prefix "$BASE_DIR/app"
 }
 
 fail(){
