@@ -64,7 +64,8 @@ updateAndInstallPackages(){
 
     # python3-pip: needed to ensure we have the pip module. Else we'd get errors like this:
     #   https://askubuntu.com/questions/1388144/usr-bin-python3-no-module-named-pip
-    sudo apt -y install git python3-pip
+    # libasound2-dev: needed to install simpleaudio via pip
+    sudo apt -y install git python3-pip libasound2-dev
     sudo apt -y full-upgrade
 
     sudo python3 -m pip install --upgrade pytz simpleaudio pyjson5
