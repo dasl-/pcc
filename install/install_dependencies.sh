@@ -99,8 +99,12 @@ installNode(){
 
     info "\\nInstalling react app dependencies..."
 
-    # Limit RAM to 512 MB in attempts to avoid OOM errors: https://gist.github.com/dasl-/5abdd44806ff75f644daa9bc46b69b3e
-    # See: https://stackoverflow.com/a/40939496
+    # You may get OOM errors at this step: https://gist.github.com/dasl-/5abdd44806ff75f644daa9bc46b69b3e
+    # We tried working around this via the `--max-old-space-size` flag (see: https://stackoverflow.com/a/40939496 )
+    # But that didn't work. Perhaps it's impossible to install with a lower limit - maybe it needs a ton of 
+    # RAM to succeed. If you get failures here, I suggest temporarily moving the SD card to a pi with more RAM
+    # and performing the installation there. Once it's been installed, you can move the SD card back to the
+    # original pi.
     npm install --prefix "$BASE_DIR/app"
 }
 
